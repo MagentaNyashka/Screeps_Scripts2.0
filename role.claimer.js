@@ -1,7 +1,7 @@
 var roleClaimer = {
     run: function(creep) {
-        anotherRoomName = 'E28N39';
-        RoomName = '[room E28N39]'
+        anotherRoomName = 'E28N38';
+        RoomName = '[room E28N38]'
         if(creep.room != RoomName) {
             const exitDir = Game.map.findExit(creep.room, anotherRoomName);
             const exit = creep.pos.findClosestByRange(exitDir);

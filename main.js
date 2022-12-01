@@ -443,7 +443,6 @@ module.exports.loop = function () {
     for(var name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
-            console.log('Clearing non-existing creep memory:', name);
         }
     }
     spawns_E27N39 = Game.rooms['E27N39'].find(FIND_MY_STRUCTURES, {
@@ -504,20 +503,19 @@ module.exports.loop = function () {
     Всё
     */
     //var spawns = [Game.getObjectById('63829c421b7320d271d5c6b5')];
-    var my_spawns = ['Spawn9', 'Spawn10', 'Spawn6'];
+    var my_spawns = ['Spawn9', 'Spawn5', 'Spawn6', 'Spawn11', 'Spawn10'];
     
     _.forEach(my_spawns, function(room_spawn){
-        
+        console.log(room_spawn);
         var controller = Game.spawns[room_spawn].room.find(FIND_MY_STRUCTURES, {
             filter: {structureType: STRUCTURE_CONTROLLER}
         });
         var extantions = Game.spawns[room_spawn].room.find(FIND_MY_STRUCTURES, {
             filter: {structureType: STRUCTURE_EXTENSION}
         });
-        console.log(extantions.length)
         var constr_sites = Game.spawns[room_spawn].room.find(FIND_CONSTRUCTION_SITES);
-        console.log("fffg" + extantions)
-        if(extantions.length < 5){
+        console.log(controller[0].level);
+        if(extantions.length < 5 || controller[0].level == 1){
             var Harvester_BP = [WORK,WORK,CARRY,MOVE];
             var maxHarvesters = 2;
             var Ugrader_BP = [WORK,WORK,CARRY,MOVE];
@@ -525,7 +523,7 @@ module.exports.loop = function () {
             var Builder_BP = [WORK,CARRY,CARRY,MOVE]
             var maxBuilders = 1;
         }
-        if(extantions.length < 10){
+        if(extantions.length < 10 && extantions.length >= 5 && controller[0].level >= 2){
             var Harvester_BP = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
             var Ugrader_BP = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
@@ -533,39 +531,39 @@ module.exports.loop = function () {
             var Builder_BP = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
             var maxBuilders = 2;
         }
-        if(extantions.length < 20){
-            var Harvester_BP = [WORK,CARRY,MOVE];
+        if(extantions.length < 20 && extantions.length >= 10 && controller[0].level >= 3){
+            var Harvester_BP = [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
-            var Ugrader_BP = [WORK,CARRY,MOVE];
+            var Ugrader_BP = [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK, CARRY, MOVE]
+            var Builder_BP = [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE]
             var maxBuilders = 1;
         }
-        if(extantions.length < 30){
-            var Harvester_BP = [WORK,CARRY,MOVE];
+        if(extantions.length < 30 && extantions.length >= 20 && controller[0].level >= 4){
+            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
-            var Ugrader_BP = [WORK,CARRY,MOVE];
+            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK, CARRY, MOVE]
+            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE]
             var maxBuilders = 1;
         }
-        if(extantions.length < 40){
-            var Harvester_BP = [WORK,CARRY,MOVE];
+        if(extantions.length < 40 && extantions.length >= 30 && controller[0].level >= 5){
+            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
-            var Ugrader_BP = [WORK,CARRY,MOVE];
+            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK, CARRY, MOVE]
+            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]
             var maxBuilders = 1;
         }
-        if(extantions.length < 50){
-            var Harvester_BP = [WORK,CARRY,MOVE];
+        if(extantions.length < 50 && extantions.length >= 40 && controller[0].level >= 6){
+            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
-            var Ugrader_BP = [WORK,CARRY,MOVE];
+            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK, CARRY, MOVE]
+            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]
             var maxBuilders = 1;
         }
-        if(extantions.length < 60){
+        if(extantions.length < 60 && extantions.length >= 50 && controller[0].level >= 7){
             var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
             var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
@@ -573,7 +571,7 @@ module.exports.loop = function () {
             var Builder_BP = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxBuilders = 1;
         }
-        if(extantions.length >= 60){
+        if(extantions.length >= 60 && controller[0].level >= 8){
             var Harvester_BP = [WORK,CARRY,MOVE];
             var maxHarvesters = 2;
             var Ugrader_BP = [WORK,CARRY,MOVE];
@@ -583,9 +581,7 @@ module.exports.loop = function () {
         }
         
         var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room == Game.spawns[room_spawn].room);
-        console.log(Game.spawns[room_spawn].room + " " + harvesters.length);
         if(harvesters.length < maxHarvesters){
-            console.log('spawn');
             var newHarvesterName = 'H_2.0_' + Game.time + "_" + Game.spawns[room_spawn].room;
             Game.spawns[room_spawn].spawnCreep(Harvester_BP, newHarvesterName,
                 {memory: {role: 'harvester'}});
