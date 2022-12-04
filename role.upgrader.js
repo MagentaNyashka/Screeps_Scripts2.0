@@ -27,7 +27,6 @@ var roleUpgrader = {
 
 module.exports = roleUpgrader;
 */
-var boostTime = 0;
 var roleUpgrader = {
 
     /** @param {Creep} creep **/
@@ -46,49 +45,30 @@ var roleUpgrader = {
             }
         }   
         else {
-            if(creep.room == '[room E26N39]'){
-                var boostLab = Game.getObjectById('62e46fcabac167e54855a804');
-                if(!creep.memory.boosted && boostLab.store[RESOURCE_CATALYZED_GHODIUM_ACID] != 0 && boostLab.store[RESOURCE_ENERGY] != 0){
-                    if(!creep.pos.inRangeTo(boostLab, 1)){
-                        creep.moveTo(boostLab, {visualizePathStyle: {stroke: '#ffffff'}});
-                    }
-                    else{
-                        if(boostTime != 5){
-                            boostTime = boostTime + 1;
-                        }
-                        else{
-                            creep.memory.boosted = true;
-                            boostTime = 0;
-                        }
-                    }
-                    
+            var link = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return(structure.structureType == STRUCTURE_LINK);
                 }
-                else{
-                    var link = creep.room.find(FIND_STRUCTURES, {
-                        filter: (structure) => {
-                            return(structure.structureType == STRUCTURE_LINK);
-                        }
-                    });
-                    var links = creep.pos.findClosestByRange(link);
-                    if(link.length != 0){
-                        var sources = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                            filter: (structure) => {
-                                return(structure.structureType == STRUCTURE_LINK);
-                            }
-                        });
+            });
+            var links = creep.pos.findClosestByRange(link);
+            if(link.length != 0){
+                var sources = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return(structure.structureType == STRUCTURE_LINK);
                     }
-                    else{
-                        var sources = creep.room.find(FIND_SOURCES);
-                        if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE || creep.harvest(sources[0]) == ERR_NOT_ENOUGH_ENERGY) {
-                            creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                        }
-                    }
-                    if(creep.withdraw(sources, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(sources, {visualizePathStyle: {stroke: '#00ffff'}});
-                    }
+                });
+            }
+            else{
+                var sources = creep.room.find(FIND_SOURCES);
+                if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE || creep.harvest(sources[0]) == ERR_NOT_ENOUGH_ENERGY) {
+                    creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-            /*
+            if(creep.withdraw(sources, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources, {visualizePathStyle: {stroke: '#00ffff'}});
+            }
+        }
+                    /*
 I see you
 You see me
 How pleasant
@@ -194,31 +174,6 @@ On your patient lips
 To eternal bliss
 I'm so glad to know
             */
-            else{
-                var link = creep.room.find(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return(structure.structureType == STRUCTURE_LINK);
-                    }
-                });
-                var links = creep.pos.findClosestByRange(link);
-                if(link.length != 0){
-                    var sources = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (structure) => {
-                            return(structure.structureType == STRUCTURE_LINK);
-                        }
-                    });
-                }
-                else{
-                    var sources = creep.room.find(FIND_SOURCES);
-                    if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE || creep.harvest(sources[0]) == ERR_NOT_ENOUGH_ENERGY) {
-                        creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                    }
-                }
-                if(creep.withdraw(sources, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources, {visualizePathStyle: {stroke: '#00ffff'}});
-                }
-            }
-        }
     }
 };
 

@@ -4,7 +4,6 @@ var roleBuilder = require('role.builder');
 var roleMiner = require('role.miner');
 var roleCenter = require('role.center');
 var roleHarvesterUpgr = require('role.harvester_upgr');
-var roleWarrior = require('role.warrior');
 var roleClaimer = require('role.claimer');
 var roleBuilderM = require('role.builder_m');
 var roleMinerM = require('role.miner_m');
@@ -12,50 +11,6 @@ var roleAttackerM = require('role.attacker_m');
 var roleHealerM = require('role.healer_m');
 var roleTransfer = require('role.transfer');
 const { lastIndexOf } = require('lodash');
-
-var maxHarvesters_E27N39 = 1;
-var maxAttacker_M_E27N39 = 0;
-var maxHealer_M_E27N39 = 0;
-var maxUpgraders_E27N39 = 1;
-var maxBuilders_E27N39 = 2;
-var maxMiners_E27N39 = 1;
-var maxCenter_E27N39 = 1;
-var maxHarvestersUpgr_E27N39 = 1;
-//
-var maxClaimer = 1;
-var maxBuilder_M = 0;
-var maxMiners_M_E27N39 = 0;
-var maxTransfers_E27N39 = 1;
-//
-var maxHarvesters_E26N39 = 2;
-var maxUpgraders_E26N39 = 1;
-var maxBuilders_E26N39 = 1;
-var maxCenter_E26N39 = 1;
-var maxMiners_E26N39 = 1;
-//
-var maxHarvesters_E26N38 = 2;
-var maxCenter_E26N38 = 0;
-//
-var maxHarvesters_E27N38 = 2;
-var maxUpgraders_E27N38 = 2;
-var maxBuilders_E27N38 = 1;
-//
-
-//H 556
-//U 556
-//B 444
-//HU 777
-//E 243
-
-//H [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE]
-//U [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE]
-//HU [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE]
-//C [CARRY,CARRY,CARRY,MOVE,MOVE,MOVE]
-//C [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]
-//CL [CLAIM,MOVE,MOVE]
-//BM [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]
-//B [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE]
-//M [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]
 
 
 
@@ -110,147 +65,6 @@ module.exports.loop = function () {
         factory.produce(RESOURCE_EXTRACT);
     }
 
-    
-
-
-    
-
-
-
-
-
-    var towers_E27N39 = Game.rooms['E27N39'].find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_TOWER }
-    });
-    var towers_E26N39 = Game.rooms['E26N39'].find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_TOWER }
-    });
-    var towers_E26N38 = Game.rooms['E26N38'].find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_TOWER }
-    });
-    var towers_E27N38 = Game.rooms['E27N38'].find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_TOWER }
-    });
-    
-    _.forEach(towers_E27N39, function(tower){
-        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (
-                    structure.structureType != STRUCTURE_WALL &&
-                    structure.structureType != STRUCTURE_RAMPART &&
-                    structure.hits < structure.hitsMax);
-                }
-        });
-        var closestDamagedWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return(structure.hits < structure.hitsMax) &&
-                structure.hits < 1000000;
-            }
-        });
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
-            Game.notify('E27N39_UNDER ATTACK!')
-        }
-        if(closestDamagedStructure || closestDamagedWall && !closestHostile) {
-            if(tower.store[RESOURCE_ENERGY] > 600){
-                tower.repair(closestDamagedStructure);
-                if(!closestDamagedStructure){
-                    tower.repair(closestDamagedWall);
-                }
-            }
-        }
-    });
-    
-    _.forEach(towers_E26N39, function(tower_E26N39){
-        var closestDamagedStructure = tower_E26N39.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (
-                    structure.structureType != STRUCTURE_WALL &&
-                    structure.structureType != STRUCTURE_RAMPART &&
-                    structure.hits < structure.hitsMax);
-                }
-        });
-        var closestDamagedWall = tower_E26N39.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return(structure.hits < structure.hitsMax) &&
-                structure.hits < 1000000;
-            }
-        });
-        if(closestDamagedStructure || closestDamagedWall) {
-            if(tower_E26N39.store[RESOURCE_ENERGY] > 0){
-                tower_E26N39.repair(closestDamagedStructure);
-                if(!closestDamagedStructure){
-                    tower_E26N39.repair(closestDamagedWall);
-                }
-            }
-        }
-        var closestHostile = tower_E26N39.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower_E26N39.attack(closestHostile);
-            Game.notify('E26N39_UNDER ATTACK!')
-        }
-    });
-
-    _.forEach(towers_E26N38, function(tower_E26N38){
-        var closestDamagedStructure = tower_E26N38.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (
-                    structure.structureType != STRUCTURE_WALL &&
-                    structure.structureType != STRUCTURE_RAMPART &&
-                    structure.hits < structure.hitsMax);
-                }
-        });
-        var closestDamagedWall = tower_E26N38.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return(structure.hits < structure.hitsMax) &&
-                structure.hits < 1000000;
-            }
-        });
-        if(closestDamagedStructure || closestDamagedWall) {
-            if(tower_E26N38.store[RESOURCE_ENERGY] > 0){
-                tower_E26N38.repair(closestDamagedStructure);
-                if(!closestDamagedStructure){
-                    tower_E26N38.repair(closestDamagedWall);
-                }
-            }
-        }
-        var closestHostile = tower_E26N38.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower_E26N38.attack(closestHostile);
-            Game.notify('E26N38_UNDER ATTACK!')
-        }
-    });
-
-    _.forEach(towers_E27N38, function(tower_E27N38){
-        var closestDamagedStructure = tower_E27N38.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (
-                    structure.structureType != STRUCTURE_WALL &&
-                    structure.structureType != STRUCTURE_RAMPART &&
-                    structure.hits < structure.hitsMax);
-                }
-        });
-        var closestDamagedWall = tower_E27N38.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return(structure.hits < structure.hitsMax) &&
-                structure.hits < 1000000;
-            }
-        });
-        if(closestDamagedStructure || closestDamagedWall) {
-            if(tower_E27N38.store[RESOURCE_ENERGY] > 0){
-                tower_E27N38.repair(closestDamagedStructure);
-                if(!closestDamagedStructure){
-                    tower_E27N38.repair(closestDamagedWall);
-                }
-            }
-        }
-        var closestHostile = tower_E27N38.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower_E27N38.attack(closestHostile);
-            Game.notify('E27N38_UNDER ATTACK!')
-        }
-    });
     
     if ((Game.time % 10 == 0)){
         var terminal_E26N39 = Game.getObjectById('62e282b837a2260784177d33');
@@ -419,48 +233,12 @@ module.exports.loop = function () {
     linkTo_E26N37.transferEnergy(linkFromUpgr_E26N37);
 
     
-    var zLab = Game.getObjectById("62d13471f319f22aaed658ce");
-    var kLab = Game.getObjectById("62a5233f875df90a4ea2576a");
-    var zkLab = Game.getObjectById("629f6a71aad9e479ce9ddb94");
-    var uLab = Game.getObjectById('62a7fe22d78d6e0577d2347c');
-    var lLab = Game.getObjectById('62ab2f1f00db9fe0cfe039fc');
-    var ulLab = Game.getObjectById('627e6c9a3da25077c4530841');
-    var ghLab = Game.getObjectById('62d1cc51db46af21be01b5d5');
-    var bLab = Game.getObjectById('62d4c9d27d34ce0fbbf5b300');
-    var boostLab = Game.getObjectById('62e46fcabac167e54855a804');
-    zkLab.runReaction(zLab, kLab);
-    ulLab.runReaction(uLab, lLab);
-    ghLab.runReaction(ulLab, zkLab);
-
-    var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room == '[room E27N39]');
-    var harvester = bLab.pos.findClosestByRange(harvesters);
-    bLab.boostCreep(harvester);
-    var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room == '[room E26N39]');
-    var upgrader = boostLab.pos.findClosestByRange(upgraders);
-    boostLab.boostCreep(upgrader);
-    
     
     for(var name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
         }
     }
-    spawns_E27N39 = Game.rooms['E27N39'].find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_SPAWN }
-    });
-    spawns_E26N39 = Game.rooms['E26N39'].find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_SPAWN }
-    });
-    spawns_E26N38 = Game.rooms['E26N38'].find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_SPAWN }
-    });
-    spawns_E27N38 = Game.rooms['E27N38'].find(FIND_MY_STRUCTURES, {
-        filter: { structureType: STRUCTURE_SPAWN }
-    });
-    var creeps_E27N39 = Game.rooms['E27N39'].find(FIND_MY_CREEPS);
-    var creeps_E26N39 = Game.rooms['E26N39'].find(FIND_MY_CREEPS);
-    var creeps_E26N38 = Game.rooms['E26N38'].find(FIND_MY_CREEPS);
-    var creeps_E27N38 = Game.rooms['E27N38'].find(FIND_MY_CREEPS);
     /*
     Границы ключ переломлен пополам
     А наш батюшка Ленин совсем усоп
@@ -502,92 +280,167 @@ module.exports.loop = function () {
     Всё идёт по плану
     Всё
     */
-    //var spawns = [Game.getObjectById('63829c421b7320d271d5c6b5')];
-    var my_spawns = ['Spawn9', 'Spawn5', 'Spawn6', 'Spawn11', 'Spawn10'];
+    var my_spawns = ['Spawn1','Spawn2','Spawn3','Spawn4','Spawn5','Spawn6','Spawn7','Spawn8','Spawn9','Spawn10','Spawn11'];
     
     _.forEach(my_spawns, function(room_spawn){
-        console.log(room_spawn);
+        var towers = Game.spawns[room_spawn].room.find(FIND_MY_STRUCTURES, {
+            filter: {structureType: STRUCTURE_TOWER}
+        })
+        _.forEach(towers, function(tower){
+            var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (
+                        structure.structureType != STRUCTURE_WALL &&
+                        structure.structureType != STRUCTURE_RAMPART &&
+                        structure.hits < structure.hitsMax);
+                    }
+            });
+            var closestDamagedWall = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return(structure.hits < structure.hitsMax) &&
+                    structure.hits < 1000000;
+                }
+            });
+            if(closestDamagedStructure || closestDamagedWall) {
+                if(tower.store[RESOURCE_ENERGY] > 0){
+                    tower.repair(closestDamagedStructure);
+                    if(!closestDamagedStructure && tower.store[RESOURCE_ENERGY] > 200){
+                        tower.repair(closestDamagedWall);
+                    }
+                }
+            }
+            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if(closestHostile) {
+                tower.attack(closestHostile);
+                Game.notify(Game.spawns[room_spawn].room + '_UNDER ATTACK!')
+            }
+        });
+
+
+
+
+
+
         var controller = Game.spawns[room_spawn].room.find(FIND_MY_STRUCTURES, {
             filter: {structureType: STRUCTURE_CONTROLLER}
         });
         var extantions = Game.spawns[room_spawn].room.find(FIND_MY_STRUCTURES, {
             filter: {structureType: STRUCTURE_EXTENSION}
         });
+        var links = Game.spawns[room_spawn].room.find(FIND_MY_STRUCTURES, {
+            filter: {structureType: STRUCTURE_LINK}
+        });
+        var sources = Game.spawns[room_spawn].room.find(FIND_SOURCES);
         var constr_sites = Game.spawns[room_spawn].room.find(FIND_CONSTRUCTION_SITES);
-        console.log(controller[0].level);
         if(extantions.length < 5 || controller[0].level == 1){
             var Harvester_BP = [WORK,WORK,CARRY,MOVE];
             var maxHarvesters = 2;
             var Ugrader_BP = [WORK,WORK,CARRY,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK,CARRY,CARRY,MOVE]
+            var Builder_BP = [WORK,CARRY,CARRY,MOVE];
             var maxBuilders = 1;
+            var maxCenters = 0;
+            var CenterBP = [CARRY, MOVE];
+            var maxHarvestersUpgr = 0;
+            var HarvesterUpgr_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
         }
         if(extantions.length < 10 && extantions.length >= 5 && controller[0].level >= 2){
             var Harvester_BP = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
             var Ugrader_BP = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE]
+            var Builder_BP = [WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE];
             var maxBuilders = 2;
+            var maxCenters = 0;
+            var CenterBP = [CARRY, MOVE];
+            var maxHarvestersUpgr = 1;
+            var HarvesterUpgr_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
+
         }
         if(extantions.length < 20 && extantions.length >= 10 && controller[0].level >= 3){
             var Harvester_BP = [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
             var Ugrader_BP = [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE]
+            var Builder_BP = [WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxBuilders = 1;
+            var maxCenters = 0;
+            var CenterBP = [CARRY, MOVE];
+            var maxHarvestersUpgr = 0;
+            var HarvesterUpgr_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
         }
         if(extantions.length < 30 && extantions.length >= 20 && controller[0].level >= 4){
             var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
             var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE]
+            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxBuilders = 1;
+            var maxCenters = 0;
+            var CenterBP = [CARRY, MOVE];
+            var maxHarvestersUpgr = 0;
+            var HarvesterUpgr_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
         }
         if(extantions.length < 40 && extantions.length >= 30 && controller[0].level >= 5){
-            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
-            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]
+            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxBuilders = 1;
+            var maxCenters = 1;
+            var CenterBP = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            var maxHarvestersUpgr = 1;
+            var HarvesterUpgr_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
         }
         if(extantions.length < 50 && extantions.length >= 40 && controller[0].level >= 6){
-            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxHarvesters = 2;
-            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxUpgraders = 2;
-            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE]
+            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
             var maxBuilders = 1;
+            var maxCenters = 1;
+            var CenterBP = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            var maxHarvestersUpgr = 1;
+            var HarvesterUpgr_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
         }
         if(extantions.length < 60 && extantions.length >= 50 && controller[0].level >= 7){
-            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
-            var maxHarvesters = 2;
-            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
-            var maxUpgraders = 2;
-            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
+            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
+            var maxHarvesters = 1;
+            var Ugrader_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
+            var maxUpgraders = 1;
+            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxBuilders = 1;
+            var maxCenters = 1;
+            var CenterBP = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            var maxHarvestersUpgr = 1;
+            var HarvesterUpgr_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
         }
         if(extantions.length >= 60 && controller[0].level >= 8){
-            var Harvester_BP = [WORK,CARRY,MOVE];
-            var maxHarvesters = 2;
+            var Harvester_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE];
+            var maxHarvesters = 1;
             var Ugrader_BP = [WORK,CARRY,MOVE];
-            var maxUpgraders = 2;
-            var Builder_BP = [WORK, CARRY, MOVE]
+            var maxUpgraders = 1;
+            var Builder_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE];
             var maxBuilders = 1;
+            var maxCenters = 1;
+            var CenterBP = [CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE];
+            var maxHarvestersUpgr = 1;
+            var HarvesterUpgr_BP = [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE];
         }
-        
+        var testIfCanSpawn = Game.spawns[room_spawn].spawnCreep(Harvester_BP, 'dry',
+        { dryRun: true });
+        var testIfCanSpawnC = Game.spawns[room_spawn].spawnCreep(CenterBP, 'dry',
+        { dryRun: true });
         var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room == Game.spawns[room_spawn].room);
-        if(harvesters.length < maxHarvesters){
+        if(harvesters.length < maxHarvesters && testIfCanSpawn == 0){
             var newHarvesterName = 'H_2.0_' + Game.time + "_" + Game.spawns[room_spawn].room;
             Game.spawns[room_spawn].spawnCreep(Harvester_BP, newHarvesterName,
                 {memory: {role: 'harvester'}});
         }
         var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room == Game.spawns[room_spawn].room);
-        if(upgraders.length < maxUpgraders && harvesters.length > 0){
+        if(upgraders.length < maxUpgraders && harvesters.length == maxHarvesters){
             var newUpgraderName = 'U_2.0_' + Game.time + "_" + Game.spawns[room_spawn].room;
             Game.spawns[room_spawn].spawnCreep(Ugrader_BP, newUpgraderName,
                 {memory: {role: 'upgrader'}});
@@ -598,156 +451,32 @@ module.exports.loop = function () {
             Game.spawns[room_spawn].spawnCreep(Builder_BP, newBuilderName,
                 {memory: {role: 'builder'}});
         }
-        
-    });
-    
-    
-    
-    
-    
-    
-    _.forEach(spawns_E27N39, function(spawn_E27N39){
-        var testIfCanSpawn = spawn_E27N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE], 'dry',
-        { dryRun: true });
-        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room == '[room E27N39]');
-        var bLab = Game.getObjectById('62d4c9d27d34ce0fbbf5b300');
-        if(harvesters.length < maxHarvesters_E27N39 && bLab.store[RESOURCE_UTRIUM_ALKALIDE] < 90 || bLab.store[RESOURCE_ENERGY] < 300 && testIfCanSpawn == 0){
-            var newHarvesterName = 'E27N39_H_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE], newHarvesterName,
-                {memory: {role: 'harvester', boosted: true}});
-        }
-        if(harvesters.length < maxHarvesters_E27N39 && bLab.store[RESOURCE_UTRIUM_ALKALIDE] >= 90 && bLab.store[RESOURCE_ENERGY] >= 300 && testIfCanSpawn == 0){
-            var newHarvesterName = 'E27N39_H_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE], newHarvesterName,
-                {memory: {role: 'harvester', boosted: false}});
-        }
-        if(creeps_E27N39.length == 0 || testIfCanSpawn != 0 && harvesters.length < maxHarvesters_E27N39){
-            var newHarvesterName = 'E27N39_H_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,CARRY,MOVE], newHarvesterName,
-                {memory: {role: 'harvester', boosted: true}});
-        }
-        var centers = _.filter(Game.creeps, (creep) => creep.memory.role == 'center' && creep.room == '[room E27N39]');
-        if(centers.length < maxCenter_E27N39 && harvesters.length >= maxHarvesters_E27N39){
-            var newCenterName = 'E27N39_C_' + Game.time;
-            spawn_E27N39.spawnCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newCenterName,
+        var centers = _.filter(Game.creeps, (creep) => creep.memory.role == 'center' && creep.room == Game.spawns[room_spawn].room);
+        if(centers.length < maxCenters && links.length >= 2 && testIfCanSpawnC == 0){
+            var newCenterName = 'C_2.0_' + Game.time + "_" + Game.spawns[room_spawn].room;
+            Game.spawns[room_spawn].spawnCreep(CenterBP, newCenterName,
                 {memory: {role: 'center'}});
         }
-        if(creeps_E27N39.length <= 1 && centers.length < maxCenter_E27N39){
-            var newCenterName = 'E27N39_C_' + Game.time;
-            spawn_E27N39.spawnCreep([CARRY,CARRY,CARRY,MOVE,MOVE,MOVE], newCenterName,
-                {memory: {role: 'center'}});
-        }
-        var builder = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room == '[room E27N39]');
-        var constr_site = Game.rooms['E27N39'].find(FIND_CONSTRUCTION_SITES);
-        if(builder.length < maxBuilders_E27N39 && harvesters.length == maxHarvesters_E27N39 && constr_site != 0) {
-            var newBuilderName = 'E27N39_B_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newBuilderName,
-                {memory: {role: 'builder'}});
-        }
-        var harvester_upgr = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester_upgr' && creep.room == '[room E27N39]');
-        if(harvester_upgr.length < maxHarvestersUpgr_E27N39 && harvesters.length == maxHarvesters_E27N39) {
-            var newHarvesterUpgrName = 'E27N39_HU_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE,MOVE], newHarvesterUpgrName,
+        var harvester_upgr = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester_upgr' && creep.room == Game.spawns[room_spawn].room);
+        if(harvester_upgr.length < maxHarvestersUpgr && harvesters.length == maxHarvesters && links.length >= 3) {
+            var newHarvesterUpgrName = 'HU_2.0_' + Game.time + "_" + Game.spawns[room_spawn].room;
+            Game.spawns[room_spawn].spawnCreep(HarvesterUpgr_BP, newHarvesterUpgrName,
                 {memory: {role: 'harvester_upgr'}});
         }
-        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room == '[room E27N39]');
-        if(upgraders.length < maxUpgraders_E27N39 && harvesters.length == maxHarvesters_E27N39) {
-            var newUpgraderName = 'E27N39_U_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,WORK,WORK,CARRY,MOVE,MOVE], newUpgraderName,
-                {memory: {role: 'upgrader'}});
-        }
-        var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner' && creep.room == '[room E27N39]');
-        if(miners.length < maxMiners_E27N39 && harvesters.length == maxHarvesters_E27N39) {
-            var newMinerName = 'E27N39_M_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newMinerName,
-                {memory: {role: 'miner'}});
-        }
-        var miners_m = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner_m');
-        if(miners_m.length < maxMiners_M_E27N39 && harvesters.length == maxHarvesters_E27N39) {
-            var newMinerMName = 'E27N39_MM_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newMinerMName,
-                {memory: {role: 'miner_m'}});
-        }
-        var claimer = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
-        if(claimer.length < maxClaimer && harvesters.length == maxHarvesters_E27N39) {
-            var newClaimerName = 'E27N39_CL_' + Game.time;
-            spawn_E27N39.spawnCreep([CLAIM,CLAIM,MOVE,MOVE], newClaimerName,
-                {memory: {role: 'claimer'}});
-        }
-        var builder_m = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder_m');
-        if(builder_m.length < maxBuilder_M && harvesters.length == maxHarvesters_E27N39) {
-            var newBuilderMName = 'E27N39_BM_' + Game.time;
-            spawn_E27N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newBuilderMName,
-                {memory: {role: 'builder_m'}});
-        }
-        var transfers = _.filter(Game.creeps, (creep) => creep.memory.role == 'transfer');
-        if(transfers.length < maxTransfers_E27N39 && harvesters.length == maxHarvesters_E27N39) {
-            var newTransferName = 'E27N39_T_' + Game.time;
-            spawn_E27N39.spawnCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newTransferName,
-                {memory: {role: 'transfer'}});
-        }
-        var attackers_m = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker_m');
-        if(attackers_m.length < maxAttacker_M_E27N39 && harvesters.length == maxHarvesters_E27N39) {
-            var newAttackerMName = 'E27N39_AM_' + Game.time;
-            spawn_E27N39.spawnCreep([ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,ATTACK,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newAttackerMName,
-                {memory: {role: 'attacker_m'}});
-        }
-        var healer_m = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer_m');
-        if(healer_m.length < maxHealer_M_E27N39 && harvesters.length == maxHarvesters_E27N39) {
-            var newHealerMName = 'E27N39_HM_' + Game.time;
-            spawn_E27N39.spawnCreep([HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,HEAL,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newHealerMName,
-                {memory: {role: 'healer_m'}});
-        }
-    });
-    
-    _.forEach(spawns_E26N39, function(spawn_E26N39){
-        var testIfCanSpawn = spawn_E26N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], 'dry',
-        { dryRun: true });
-        var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester' && creep.room == '[room E26N39]');
-        var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader' && creep.room == '[room E26N39]');
-        if(creeps_E26N39.length == 0 || testIfCanSpawn != 0 && harvesters.length < maxHarvesters_E26N39){
-            var newHarvesterName = 'E26N39_H_' + Game.time;
-            spawn_E26N39.spawnCreep([WORK,CARRY,MOVE], newHarvesterName,
+        if(harvesters.length < 1 && testIfCanSpawn == -6){
+            var newHarvesterName = 'H_2.0_' + Game.time + "_" + Game.spawns[room_spawn].room;
+            Game.spawns[room_spawn].spawnCreep([WORK,CARRY,MOVE], newHarvesterName,
                 {memory: {role: 'harvester'}});
         }
-        if(upgraders.length < maxUpgraders_E26N39 && harvesters.length == maxHarvesters_E26N39) {
-            var newUpgraderName = 'E26N39_U_' + Game.time;
-            spawn_E26N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], newUpgraderName,
-                {memory: {role: 'upgrader', boosted: false}});
-        }
-        var centers = _.filter(Game.creeps, (creep) => creep.memory.role == 'center' && creep.room == '[room E26N39]');
-        if(centers.length < maxCenter_E26N39 && harvesters.length >= maxHarvesters_E26N39){
-            var newCenterName = 'E26N39_C_' + Game.time;
-            spawn_E26N39.spawnCreep([CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newCenterName,
+        if(centers.length < 1 && testIfCanSpawnC == -6){
+            var newCenterName = 'C_2.0_' + Game.time + "_" + Game.spawns[room_spawn].room;
+            Game.spawns[room_spawn].spawnCreep([CARRY,MOVE], newCenterName,
                 {memory: {role: 'center'}});
         }
-        if(creeps_E26N39.length == 1 && harvesters.length != 0){
-            var newCenterName = 'E26N39_C_' + Game.time;
-            spawn_E26N39.spawnCreep([CARRY,CARRY,CARRY,MOVE,MOVE,MOVE], newCenterName,
-                {memory: {role: 'center'}});
-        }
-        if(harvesters.length < maxHarvesters_E26N39 && testIfCanSpawn == 0) {
-            var newHarvesterName = 'E26N39_H_' + Game.time;
-            spawn_E26N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], newHarvesterName,
-                {memory: {role: 'harvester'}});      
-        }
-        var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner' && creep.room == '[room E26N39]');
-        if(miners.length < maxMiners_E26N39 && harvesters.length == maxHarvesters_E26N39) {
-            var newMinerName = 'E26N39_M_' + Game.time;
-            spawn_E26N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE], newMinerName,
-                {memory: {role: 'miner'}});
-        }
-
         
-        var builder = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder' && creep.room == '[room E26N39]');
-        var constr_site = Game.rooms['E26N39'].find(FIND_CONSTRUCTION_SITES);
-        if(builder.length < maxBuilders_E26N39 && harvesters.length == maxHarvesters_E26N39 && constr_site != 0) {
-            var newBuilderName = 'E26N39_B_' + Game.time;
-            spawn_E26N39.spawnCreep([WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE], newBuilderName,
-                {memory: {role: 'builder'}});
-        }
-    
     });
+    
+    
 
 
     
@@ -785,7 +514,6 @@ module.exports.loop = function () {
             Game.powerCreeps['E27N39_MAIN'].moveTo(extantion);
         }
         */
-       var tower = Game.powerCreeps['CERTIFIED FORKLIFT DRIVER'].pos.findClosestByRange(towers_E27N39);
         
         if(Game.powerCreeps['CERTIFIED FORKLIFT DRIVER'].usePower(PWR_OPERATE_FACTORY, factory) == ERR_NOT_IN_RANGE && Game.powerCreeps['CERTIFIED FORKLIFT DRIVER'].store[RESOURCE_OPS] >= 100 && factory.level != 4){
             Game.powerCreeps['CERTIFIED FORKLIFT DRIVER'].moveTo(factory);
